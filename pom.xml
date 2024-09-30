@@ -20,6 +20,12 @@
             <artifactId>javafx-swing</artifactId>
             <version>23</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.junrar</groupId>
+            <artifactId>junrar</artifactId>
+            <version>7.5.5</version>
+        </dependency>
     </dependencies>
 
 

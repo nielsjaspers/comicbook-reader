@@ -1,9 +1,12 @@
 package com.comicbookreader;
+import com.comicbookreader.comicbook.Comicbook;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
