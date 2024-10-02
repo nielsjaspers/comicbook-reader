@@ -1,9 +1,12 @@
 package com.comicbookreader.comicbook;
 
+import java.util.List;
+
 public class CBRParser implements FileParser {
 
     @Override
-    public void extractPages() {
+    public List<Page> extractPages(String path) {
 
+        return null;
     }
 }
