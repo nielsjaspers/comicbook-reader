@@ -19,7 +19,6 @@ public class ComicbookreaderUI implements ActionListener {
     public ComicbookreaderUI(ArrayList<Page> pages) {
        this.pages = pages;
        initUI();
-
     }
 
     public void initUI(){
@@ -57,13 +56,13 @@ public class ComicbookreaderUI implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
 
-        if (command.equals("Next >")) {
+        if (command.equals("Next >") && currentPage < (pages.size() - 1)) {
             currentPage ++;
             updatePageDisplay();
             System.out.println("The page is going up and = " + currentPage);
 
 
-        } else if (command.equals("< Previous")) {
+        } else if (command.equals("< Previous") && currentPage > 0) {
             currentPage --;
             updatePageDisplay();
             System.out.println("The page is going down and = " + currentPage);
