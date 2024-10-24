@@ -1,8 +1,5 @@
 package com.comicbookreader;
-import com.comicbookreader.comicbook.ComicbookreaderUI;
-import com.comicbookreader.comicbook.Page;
-import com.comicbookreader.comicbook.CBZParser;
-import com.comicbookreader.comicbook.Comicbook;
+import com.comicbookreader.comicbook.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,11 +9,24 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) throws IOException {
 
+        //new ComicbookreaderUI(pages);
+
         CBZParser cbzParser = new CBZParser();
-        String cbzFilePath = "imported_comics/Deadpool Team-Up 002 (2024) (Digital) (Shan-Empire).cbz";  // Provide the path to your CBZ file
+        String cbzFilePath = "imported_comics/Deadpool Team-Up 002 (2024) (Digital) (Shan-Empire).cbz";
 
         ArrayList<Page> pages = new CBZParser().extractPages(cbzFilePath);
-        new ComicbookreaderUI(pages);
+
+        Comicbook comicbook = new Comicbook("Deadpool", pages);
+
+        ArrayList<Comicbook> comicbooks = new ArrayList<>();
+        comicbooks.add(comicbook);
+
+        System.out.println("Pages extracted: " + pages.size()); // Print number of pages
+        new Mainmenu(comicbooks);
+
+
+
+
 
 //        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 //

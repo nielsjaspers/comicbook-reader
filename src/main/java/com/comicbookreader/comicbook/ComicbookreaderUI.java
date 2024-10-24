@@ -3,6 +3,8 @@ package com.comicbookreader.comicbook;
 import com.comicbookreader.Main;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,9 +17,10 @@ public class ComicbookreaderUI implements ActionListener {
     private JLabel pageNumberLabel;
     private ArrayList<Page> pages;
     private int currentPage = 0;
+    public Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
     public ComicbookreaderUI(ArrayList<Page> pages) {
-       this.pages = pages;
+        this.pages = pages;
        initUI();
     }
 
@@ -25,14 +28,19 @@ public class ComicbookreaderUI implements ActionListener {
         frame = new JFrame("Comic Book Reader");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+
         frame.setSize(dim.width, dim.height);
 
         frame.setLayout(new BorderLayout());
 
+        JPanel imagePanel = new JPanel();
+        imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
+
         imageLabel = new JLabel();
-        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        frame.add(imageLabel, BorderLayout.CENTER);
+        imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        imagePanel.add(imageLabel);
+
+        frame.add(imagePanel, BorderLayout.CENTER);
 
         JPanel navigationPanel = new JPanel(new FlowLayout());
         JButton previousButton = new JButton("< Previous");
@@ -67,18 +75,35 @@ public class ComicbookreaderUI implements ActionListener {
             updatePageDisplay();
             System.out.println("The page is going down and = " + currentPage);
         }
-
     }
 
     private void updatePageDisplay(){
         BufferedImage img = pages.get(currentPage).image;
-        Dimension frameSize = frame.getSize();
-        Image scaledImage = img.getScaledInstance(frameSize.width, frameSize.height, Image.SCALE_SMOOTH);
 
-        if (img != null){
-            imageLabel.setIcon(new ImageIcon(scaledImage));
+            imageLabel.setIcon(new ImageIcon(scaleImages(img)));
             pageNumberLabel.setText("Current page: " + (currentPage + 1));
-        }
+    }
 
+    private Image scaleImages(BufferedImage img){
+        int imgWidth = img.getWidth();
+        int imgHeight = img.getHeight();
+
+        int frameWidth = dim.width - 100;
+        int frameHeight = dim.height - 150;
+
+        double imgAspectRatio = (double) imgWidth / imgHeight;
+        double frameAspectRatio = (double) frameWidth / frameHeight;
+
+        int newWidth, newHeight;
+
+        if (frameAspectRatio > imgAspectRatio) {
+            newHeight = frameHeight;
+            newWidth = (int) (newHeight * imgAspectRatio);
+        } else {
+            newWidth = frameWidth;
+            newHeight = (int) (newWidth / imgAspectRatio);
+        }
+        Image scaledImage = img.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+        return scaledImage;
     }
 }
