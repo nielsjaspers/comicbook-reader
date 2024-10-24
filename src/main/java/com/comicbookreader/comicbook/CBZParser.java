@@ -39,14 +39,4 @@ public class CBZParser implements FileParser {
         String lowerCaseFileName = fileName.toLowerCase();
         return lowerCaseFileName.endsWith(".jpg") || lowerCaseFileName.endsWith(".jpeg") || lowerCaseFileName.endsWith(".png");
     }
-
-    public void displayImage(BufferedImage img) {
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(new Dimension(img.getWidth(), img.getHeight()));
-        JLabel label = new JLabel(new ImageIcon(img));
-        frame.getContentPane().add(label, BorderLayout.CENTER);
-        frame.pack();
-        frame.setVisible(true);
-    }
 }
