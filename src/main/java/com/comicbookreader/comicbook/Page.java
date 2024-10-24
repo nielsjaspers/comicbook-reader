@@ -15,4 +15,6 @@ public class Page {
         this.image = image;
     }
     public Page() {}
+
 }
+

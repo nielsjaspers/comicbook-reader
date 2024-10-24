@@ -17,14 +17,15 @@ public class Main {
         ArrayList<Page> pages = new CBZParser().extractPages(cbzFilePath);
 
         Comicbook comicbook = new Comicbook("Deadpool", pages);
+        Comicbook comicbook1 = new Comicbook("Deadpool1", pages);
+
 
         ArrayList<Comicbook> comicbooks = new ArrayList<>();
         comicbooks.add(comicbook);
+        comicbooks.add(comicbook1);
 
         System.out.println("Pages extracted: " + pages.size()); // Print number of pages
         new Mainmenu(comicbooks);
-
-
 
 
 

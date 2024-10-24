@@ -48,14 +48,18 @@ public class ComicbookreaderUI implements ActionListener {
         JButton nextButton = new JButton ("Next >");
         nextButton.addActionListener(this);
 
+        JPanel mainMenuPanel = new JPanel(new FlowLayout());
+        JButton mainMenuButton = new JButton ("Main Menu");
+        mainMenuButton.addActionListener(this);
+
         pageNumberLabel = new JLabel("Current page: " + (currentPage + 1));
 
         navigationPanel.add(previousButton);
         navigationPanel.add(pageNumberLabel);
         navigationPanel.add(nextButton);
-
+        mainMenuPanel.add(mainMenuButton);
         frame.add(navigationPanel, BorderLayout.SOUTH);
-
+        frame.add(mainMenuPanel, BorderLayout.NORTH);
         frame.setVisible(true);
         updatePageDisplay();
     }
@@ -75,12 +79,16 @@ public class ComicbookreaderUI implements ActionListener {
             updatePageDisplay();
             System.out.println("The page is going down and = " + currentPage);
         }
+        else if (command.equals("Main Menu")){
+            frame.dispose();
+            Main main = new Main();
+        }
     }
 
     private void updatePageDisplay(){
         BufferedImage img = pages.get(currentPage).image;
 
-            imageLabel.setIcon(new ImageIcon(scaleImages(img)));
+            imageLabel.setIcon(new ImageIcon((scaleImages(img))));
             pageNumberLabel.setText("Current page: " + (currentPage + 1));
     }
 
