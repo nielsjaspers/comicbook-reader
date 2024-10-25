@@ -9,8 +9,6 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        //new ComicbookreaderUI(pages);
-
         CBZParser cbzParser = new CBZParser();
         String cbzFilePath = "imported_comics/Deadpool Team-Up 002 (2024) (Digital) (Shan-Empire).cbz";
 
