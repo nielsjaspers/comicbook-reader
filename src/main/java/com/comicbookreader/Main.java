@@ -9,6 +9,14 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) throws IOException {
 
+        CBRParser cbrParser = new CBRParser();
+        String cbrFilePath = "imported_comics/Origin of Galactus v1 001 (1996-02).cbr";
+
+        cbrParser.extractPages(cbrFilePath);
+
+        ArrayList<Page> pages2 = new CBZParser().extractPages(cbrFilePath);
+        Comicbook comicbook3 = new Comicbook("Origin of Galactus", pages2);
+
         CBZParser cbzParser = new CBZParser();
         String cbzFilePath = "imported_comics/Deadpool Team-Up 002 (2024) (Digital) (Shan-Empire).cbz";
         String cbzFilePath1 = "imported_comics/pepper&carrot_1.nhlcomic";
@@ -24,9 +32,23 @@ public class Main {
         comicbooks.add(comicbook);
         comicbooks.add(comicbook1);
         comicbooks.add(comicbook2);
+        comicbooks.add(comicbook3);
 
         System.out.println("Pages extracted: " + pages.size()); // Print number of pages
         new Mainmenu(comicbooks);
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                CBRParser cbrParser = new CBRParser();
+                try {
+                    cbrParser.cleanup();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
 
     }
 }
