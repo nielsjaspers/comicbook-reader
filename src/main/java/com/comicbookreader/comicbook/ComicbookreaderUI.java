@@ -9,7 +9,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+
+import static com.sun.javafx.iio.common.ImageTools.scaleImage;
 
 public class ComicbookreaderUI implements ActionListener {
     private JFrame frame;
@@ -85,12 +88,22 @@ public class ComicbookreaderUI implements ActionListener {
         }
     }
 
-    private void updatePageDisplay(){
+    private void updatePageDisplay() {
+        if (pages.isEmpty()) {
+            imageLabel.setIcon(null);
+            pageNumberLabel.setText("No pages available");
+            return;
+        }
         BufferedImage img = pages.get(currentPage).image;
-
-            imageLabel.setIcon(new ImageIcon((scaleImages(img))));
+        if (img != null) {
+            imageLabel.setIcon(new ImageIcon(scaleImages(img)));
             pageNumberLabel.setText("Current page: " + (currentPage + 1));
+        } else {
+            imageLabel.setIcon(null);
+            pageNumberLabel.setText("Image not found for this page");
+        }
     }
+
 
     private Image scaleImages(BufferedImage img){
         int imgWidth = img.getWidth();
