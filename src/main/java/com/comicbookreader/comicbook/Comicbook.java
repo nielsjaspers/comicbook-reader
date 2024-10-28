@@ -1,13 +1,15 @@
 package com.comicbookreader.comicbook;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Comicbook {
     public String name;
-    public List<Author> authorList;
-    public List<Page> pageList;
+    public ArrayList<Author> authorList;
+    public ArrayList<Page> pages;
+    public BufferedImage coverImage;
     public boolean read;
     public int progression;
     public String publisher;
@@ -17,8 +19,27 @@ public class Comicbook {
     public int numberInSeries;
     public String path;
 
-    public Comicbook(String name) {
 
+    public Comicbook(String name, List<Page> pages) {
+        this.name = name;
+        this.pages = new ArrayList<>(pages);
     }
 
+
+    public Comicbook(String name) {
+        this.name = name;
+        this.pages = new ArrayList<>();
+    }
+
+    public Comicbook() {
+        this.pages = new ArrayList<>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public ArrayList<Page> getPages() {
+        return pages;
+    }
 }

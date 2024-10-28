@@ -1,28 +1,32 @@
 package com.comicbookreader;
-import com.comicbookreader.comicbook.CBRParser;
-import com.comicbookreader.comicbook.Comicbook;
+import com.comicbookreader.comicbook.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        CBZParser cbzParser = new CBZParser();
+        String cbzFilePath = "imported_comics/Deadpool Team-Up 002 (2024) (Digital) (Shan-Empire).cbz";
+        String cbzFilePath1 = "imported_comics/pepper&carrot_1.nhlcomic";
 
-        JFrame frame = new JFrame("Comic Book Reader");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ArrayList<Page> pages = new CBZParser().extractPages(cbzFilePath);
+        ArrayList<Page> pages1 = new CBZParser().extractPages(cbzFilePath1);
+        Comicbook comicbook = new Comicbook("Deadpool", pages);
+        Comicbook comicbook1 = new Comicbook("Deadpool1", pages);
+        Comicbook comicbook2 = new Comicbook("Pepper & Carrot", pages1);
 
-        System.out.println("h = " + dim.height + "\nw = " + dim.width);
 
-        frame.setSize(dim.width, dim.height);
+        ArrayList<Comicbook> comicbooks = new ArrayList<>();
+        comicbooks.add(comicbook);
+        comicbooks.add(comicbook1);
+        comicbooks.add(comicbook2);
 
-        frame.setLayout(null);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        System.out.println("Pages extracted: " + pages.size()); // Print number of pages
+        new Mainmenu(comicbooks);
 
-        CBRParser parser = new CBRParser();
-        parser.extractPages("imported_comics/Origin of Galactus v1 001 (1996-02).cbr");
     }
 }
