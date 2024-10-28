@@ -17,7 +17,6 @@ public class CBRParser implements FileParser {
     private final String DESTINATION_FOLDER = "imported_comics/unzipped_rar";
 
     public ArrayList<Page> pages = new ArrayList<>();
-    private BufferedImage image;
 
     @Override
     public ArrayList<Page> extractPages(String path) throws IOException {
@@ -38,7 +37,7 @@ public class CBRParser implements FileParser {
                     try(FileOutputStream fos = new FileOutputStream(extractedFile)){
                         rar.extractFile(fileHeader, fos);
                         try {
-                            image = ImageIO.read(extractedFile);
+                            BufferedImage image = ImageIO.read(extractedFile);
                             pages.add(new Page(pagenumber++, extractedFile.getAbsolutePath(), image));
                         } catch (IOException e) {
                             System.err.println("Error reading image " + extractedFile.getAbsolutePath());
@@ -50,10 +49,6 @@ public class CBRParser implements FileParser {
             }
         } catch (RarException e) {
             System.err.println("Error opening .rar archive:" + e.getMessage());
-        }
-
-        for (Page page : pages) {
-            System.out.println("page.path = " + page.path);
         }
         return pages;
     }
