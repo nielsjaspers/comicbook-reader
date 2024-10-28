@@ -15,6 +15,7 @@ public class Comicbook {
     public boolean favourite;
     public boolean bookmark;
     public int numberInSeries;
+    public String path;
 
     public Comicbook(String name) {
 

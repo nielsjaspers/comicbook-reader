@@ -1,4 +1,5 @@
 package com.comicbookreader;
+import com.comicbookreader.comicbook.CBRParser;
 import com.comicbookreader.comicbook.Comicbook;
 
 import javax.swing.*;
@@ -20,5 +21,8 @@ public class Main {
         frame.setLayout(null);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+        CBRParser parser = new CBRParser();
+        parser.extractPages("imported_comics/Origin of Galactus v1 001 (1996-02).cbr");
     }
 }

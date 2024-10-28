@@ -1,5 +1,7 @@
 package com.comicbookreader.comicbook;
 
+import java.io.IOException;
+
 public interface FileParser {
-    void extractPages();
+    void extractPages(String path) throws IOException;
 }
