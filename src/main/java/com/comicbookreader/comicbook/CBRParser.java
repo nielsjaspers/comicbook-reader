@@ -50,6 +50,7 @@ public class CBRParser implements FileParser {
         } catch (RarException e) {
             System.err.println("Error opening .rar archive:" + e.getMessage());
         }
+
         return pages;
     }
 
