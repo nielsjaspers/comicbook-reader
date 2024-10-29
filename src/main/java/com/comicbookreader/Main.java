@@ -15,9 +15,9 @@ public class Main {
 
         ArrayList<Page> pages = new CBZParser().extractPages(cbzFilePath);
         ArrayList<Page> pages1 = new CBZParser().extractPages(cbzFilePath1);
-        Comicbook comicbook = new Comicbook("Deadpool", pages);
-        Comicbook comicbook1 = new Comicbook("Deadpool1", pages);
-        Comicbook comicbook2 = new Comicbook("Pepper & Carrot", pages1);
+        Comicbook comicbook = new Comicbook("Deadpool", pages, false);
+        Comicbook comicbook1 = new Comicbook("Deadpool1", pages, false);
+        Comicbook comicbook2 = new Comicbook("Pepper & Carrot", pages1, true);
 
 
         ArrayList<Comicbook> comicbooks = new ArrayList<>();

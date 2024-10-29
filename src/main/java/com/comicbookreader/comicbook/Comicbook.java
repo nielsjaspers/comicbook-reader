@@ -2,6 +2,7 @@ package com.comicbookreader.comicbook;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -19,9 +20,12 @@ public class Comicbook {
     public int numberInSeries;
 
 
-    public Comicbook(String name, List<Page> pages) {
+    public Comicbook(String name, List<Page> pages, boolean invert) {
         this.name = name;
         this.pages = new ArrayList<>(pages);
+        if (invert) {
+            this.pages = invertPages();
+        }
     }
 
 
@@ -41,4 +45,10 @@ public class Comicbook {
     public ArrayList<Page> getPages() {
         return pages;
     }
+
+    public ArrayList<Page> invertPages() {
+            Collections.reverse(pages);
+        return pages;
+    }
 }
+
