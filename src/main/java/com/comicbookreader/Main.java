@@ -20,10 +20,11 @@ public class Main {
         ArrayList<Page> pages1 = new CBZParser().extractPages(cbzFilePath1);
         ArrayList<Page> pages2 = new CBRParser().extractPages(cbrFilePath);
 
-        Comicbook comicbook = new Comicbook("Deadpool", pages);
-        Comicbook comicbook1 = new Comicbook("Deadpool1", pages);
-        Comicbook comicbook2 = new Comicbook("Pepper & Carrot", pages1);
-        Comicbook comicbook3 = new Comicbook("Origin of Galactus", pages2);
+        Comicbook comicbook = new Comicbook("Deadpool", pages, false);
+        Comicbook comicbook1 = new Comicbook("Deadpool1", pages, false);
+        Comicbook comicbook2 = new Comicbook("Pepper & Carrot", pages1, true);
+        Comicbook comicbook3 = new Comicbook("Origin of Galactus", pages2, false);
+
 
 
         ArrayList<Comicbook> comicbooks = new ArrayList<>();

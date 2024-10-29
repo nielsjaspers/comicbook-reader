@@ -1,6 +1,7 @@
 package com.comicbookreader.comicbook;
 
 import java.awt.image.BufferedImage;
+import java.util.Collections;
 import java.util.List;
 
 public class Page {
