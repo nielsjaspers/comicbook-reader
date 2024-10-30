@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class CBRParser implements FileParser {
-    private final String DESTINATION_FOLDER = "imported_comics/unzipped_rar";
+    private String destinationFolder = "imported_comics/unzipped_rar";
 
     public ArrayList<Page> pages = new ArrayList<>();
 
@@ -26,7 +26,7 @@ public class CBRParser implements FileParser {
         }
 
         File archive = new File(path);
-        File destination = new File(DESTINATION_FOLDER);
+        File destination = new File(destinationFolder + "/" + new File(path).getName().trim());
 
         int pagenumber = 0;
 
@@ -38,7 +38,7 @@ public class CBRParser implements FileParser {
             FileHeader fileHeader;
             while((fileHeader = rar.nextFileHeader()) != null) {
                 if(!fileHeader.isDirectory()) {
-                    File extractedFile = new File(DESTINATION_FOLDER + File.separator + fileHeader.getFileName().trim());
+                    File extractedFile = new File(destination + File.separator + fileHeader.getFileName().trim());
                     try(FileOutputStream fos = new FileOutputStream(extractedFile)){
                         rar.extractFile(fileHeader, fos);
                         try {
@@ -60,7 +60,7 @@ public class CBRParser implements FileParser {
     }
 
     public void cleanup() throws IOException {
-        File destination = new File(DESTINATION_FOLDER);
+        File destination = new File(destinationFolder);
         FileUtils.deleteDirectory(destination);
     }
 }
