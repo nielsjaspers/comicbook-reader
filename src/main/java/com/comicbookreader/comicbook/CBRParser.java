@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +21,10 @@ public class CBRParser implements FileParser {
 
     @Override
     public ArrayList<Page> extractPages(String path) throws IOException {
+        if(!new File(path).exists()) {
+            throw new FileNotFoundException(path);
+        }
+
         File archive = new File(path);
         File destination = new File(DESTINATION_FOLDER);
 
