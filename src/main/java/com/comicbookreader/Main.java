@@ -8,15 +8,6 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        ArrayList<Comicbook> comicbooks = new ArrayList<>();
-        Path directory = Paths.get("imported_comics");
-
-        File importedComicPath = new File("imported_comics");
-        if (!importedComicPath.exists()) {
-            importedComicPath.mkdir();
-        }
-
-        // Initialiseert leeg Mainmenu -- Zorgt dat de app uberhaupt openblijft.
 
         new Mainmenu();
 
