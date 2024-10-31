@@ -1,15 +1,20 @@
 package com.comicbookreader.comicbook;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Comicbook {
     public String name;
     public ArrayList<Author> authorList;
     public ArrayList<Page> pages;
+    @JsonIgnore
     public BufferedImage coverImage;
     public boolean read;
     public int progression;

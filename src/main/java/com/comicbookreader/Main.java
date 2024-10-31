@@ -11,6 +11,10 @@ public class Main {
 
         Path directory = Paths.get("imported_comics");
 
+        // paths to data folders
+        Path appDataDirectory = Paths.get("appdata");
+        Path userDataDirectory = Paths.get("userdata");
+
         List<String> comicPath = DirectoryScanner.getComicFilePaths(directory, ".cbz", ".cbr", ".nhlcomic");
       
         File importedComicPath = new File("imported_comics");
@@ -19,8 +23,28 @@ public class Main {
             importedComicPath.mkdir();
         }
 
+        // Maakt data files aan en initialiseert een lege 'array'
         File appDataJson = new File("appdata/data.json");
         File userDataJson = new File("userdata/data.json");
+        if (!Files.exists(appDataDirectory)) {
+            Files.createDirectory(appDataDirectory);
+            if (!appDataJson.exists()) {
+                appDataJson.createNewFile();
+                BufferedWriter writer = new BufferedWriter(new FileWriter(appDataJson));
+                writer.write("[]");
+                writer.close();
+            }
+
+        }
+        if (!Files.exists(userDataDirectory)) {
+            Files.createDirectory(userDataDirectory);
+            if (!userDataJson.exists()) {
+                userDataJson.createNewFile();
+                BufferedWriter writer = new BufferedWriter(new FileWriter(userDataJson));
+                writer.write("[]");
+                writer.close();
+            }
+        }
 
         // Initialiseert leeg Mainmenu -- Zorgt dat de app uberhaupt openblijft.
         ArrayList<Comicbook> comicbooks = new ArrayList<>();

@@ -12,6 +12,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class Mainmenu implements ActionListener {
@@ -22,6 +26,10 @@ public class Mainmenu implements ActionListener {
     private DefaultListModel<String> listModel;
     private ArrayList<Comicbook> comicList;
     private int scrollPaneWidth;
+
+    private String appDataPath = "appdata/data.json";
+    private File appDataFile = new File(appDataPath);
+
 
     public Mainmenu(ArrayList<Comicbook> comicList) {
         this.comicList = comicList;
@@ -34,6 +42,8 @@ public class Mainmenu implements ActionListener {
     }
 
     public void initUI() {
+        ObjectMapper mapper = new ObjectMapper();
+
         frame = new JFrame("Comic Book Reader - Main Menu");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -84,6 +94,20 @@ public class Mainmenu implements ActionListener {
 
                     Comicbook comicbook = new Comicbook(selectedFile.getName(), pages, false);
                     addComic(comicbook);  // Voeg de nieuwe comic toe aan de bestaande lijst
+
+                    List<Comicbook> tempComicList = new ArrayList<>();
+                    if (appDataFile.exists() && appDataFile.length() > 2) {
+                        tempComicList = mapper.readValue(appDataFile, new TypeReference<>() {});
+                    }
+                    try {
+                        tempComicList.add(comicbook);
+                        mapper.writeValue(appDataFile, tempComicList);
+                        System.out.println("Data succesvol geschreven naar JSON.");
+                        System.out.println("Comic toegevoegd aan JSON: " + comicbook.getName());
+                    } catch (IOException ex) {
+                        System.err.println("Fout bij schrijven naar JSON-bestand: " + ex.getMessage());
+                    }
+
                 } catch (IOException ex) {
                     System.err.println("Fout bij het verplaatsen van bestand: " + ex.getMessage());
                 }
