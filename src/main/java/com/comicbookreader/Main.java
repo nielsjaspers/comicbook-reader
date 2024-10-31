@@ -4,10 +4,16 @@ import com.comicbookreader.comicbook.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+
+        Path directory = Paths.get("imported_comics");
+
+        List<String> comicPath = DirectoryScanner.getComicFilePaths(directory, ".cbz", ".cbr", ".nhlcomic");
 
         CBRParser cbrParser = new CBRParser();
         CBZParser cbzParser = new CBZParser();
