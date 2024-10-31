@@ -30,13 +30,14 @@ public class Comicbook {
     }
 
 
-    public Comicbook(String name) {
+    public Comicbook(String name, List<Page>pages) {
         this.name = name;
-        this.pages = new ArrayList<>();
+        this.pages = new ArrayList<>(pages);
     }
 
-    public Comicbook() {
-        this.pages = new ArrayList<>();
+
+    public Comicbook(List<Page> pages) {
+        this.pages = new ArrayList<>(pages);
     }
 
     public String getName() {
@@ -50,6 +51,11 @@ public class Comicbook {
     public ArrayList<Page> invertPages() {
             Collections.reverse(pages);
         return pages;
+    }
+    public static Comicbook fromFilePath(String filePath, List<Page> pages) {
+        String name = filePath.substring(filePath.lastIndexOf("/") + 1, filePath.lastIndexOf("."));
+        System.out.println(name);
+        return new Comicbook(name, pages);
     }
 }
 

@@ -22,9 +22,13 @@ public class Mainmenu implements ActionListener {
     private DefaultListModel<String> listModel;
     private ArrayList<Comicbook> comicList;
     private int scrollPaneWidth;
+    private Comicbook currentComic;
 
-    public Mainmenu(ArrayList<Comicbook> comicList) {
-        this.comicList = comicList;
+    public Mainmenu() {
+        Path comicDirectory = Path.of("imported_comics");
+        ComicBookLoader.startDirectoryScan(comicDirectory, "cbr", "cbz", "nhlcomic");
+
+        this.comicList = ComicBookLoader.getComicList(); // Retrieve the loaded comics
         initUI();
     }
 
@@ -45,7 +49,7 @@ public class Mainmenu implements ActionListener {
         frame.setLayout(new BorderLayout());
 
         //Gets the list of comics
-        getComicList();
+        getComicList(comicList);
         JScrollPane scrollPane = new JScrollPane(displayList);
         scrollPane.setPreferredSize(new Dimension(scrollPaneWidth, frame.getHeight()));
         frame.add(scrollPane, BorderLayout.WEST);
@@ -56,6 +60,9 @@ public class Mainmenu implements ActionListener {
 
         JButton selectButton = new JButton("Select Comic");
         selectButton.addActionListener(this);
+
+        JButton InvertButton = new JButton("Invert Comic");
+        InvertButton.addActionListener(this);
 
         JButton addButton = new JButton("Import Comic");
         addButton.setPreferredSize(new Dimension(scrollPaneWidth, addButton.getPreferredSize().height));
@@ -91,9 +98,10 @@ public class Mainmenu implements ActionListener {
         });
 
 
-        // Paneel met knoppen onder in het scherm -- Voor Import & Select
+        // Paneel met knoppen onder in het scherm -- Voor Import, Select & Invert
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.add(selectButton, BorderLayout.CENTER);
+        bottomPanel.add(InvertButton, BorderLayout.EAST);
         bottomPanel.add(addButton, BorderLayout.WEST);
 
         frame.add(bottomPanel, BorderLayout.SOUTH);
@@ -101,45 +109,58 @@ public class Mainmenu implements ActionListener {
         frame.setVisible(true);
     }
 
-    public void getComicList() {
+    public void getComicList(ArrayList<Comicbook> comicList) {
+        //get the list of comics
         listModel = new DefaultListModel<>();
         for (Comicbook comic : comicList) {
+            System.out.println(comic);
             listModel.addElement(comic.getName());
         }
-            displayList = new JList<>(listModel);
-            displayList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        displayList = new JList<>(listModel);
+        displayList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-            displayList.addListSelectionListener(new ListSelectionListener() {
-                @Override
-                public void valueChanged(ListSelectionEvent e) {
-                    if (!e.getValueIsAdjusting()) {
-                        int selectedIndex = displayList.getSelectedIndex();
-                        if (selectedIndex != -1) {
-                            Comicbook selectedComicbook = comicList.get(selectedIndex);
-                            System.out.println("Comic selected: " + selectedComicbook.getName());
-                            Page firstPage = selectedComicbook.getPages().getFirst();
-
-                            if (firstPage.image != null) {
-                                Image scaledImage = firstPage.image.getScaledInstance(500, 700, Image.SCALE_SMOOTH);  // Adjust dimensions as needed
-                                imageLabel.setIcon(new ImageIcon(scaledImage));
-                            } else {
-                                imageLabel.setText("No image available for this page.");
-                            }
-                        }
+        displayList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    int selectedIndex = displayList.getSelectedIndex();
+                    if (selectedIndex != -1) {
+                        currentComic = comicList.get(selectedIndex);
+                        System.out.println("Comic selected: " + currentComic.getName());
+                        Page firstPage = currentComic.getPages().getFirst();
+                        displayPage(currentComic.getPages().get(0));
                     }
                 }
-            });
+            }
+        });
+    }
+
+    private void displayPage(Page page) {
+        if (page.image != null) {
+            Image scaledImage = page.image.getScaledInstance(500, 700, Image.SCALE_SMOOTH);  // Adjust dimensions as needed
+            imageLabel.setIcon(new ImageIcon(scaledImage));
+        } else {
+            imageLabel.setText("No image available for this page.");
         }
+    }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
 
+
+        if (command.equals("Invert Comic") && currentComic != null) {
+            currentComic.invertPages();
+            displayPage(currentComic.getPages().get(0));
+        }
         int selectedIndex = displayList.getSelectedIndex();
-        if (selectedIndex != -1) {
-            Comicbook tempcomic = comicList.get(selectedIndex);
-
-            new ComicbookreaderUI(tempcomic.getPages());
+        if (selectedIndex != -1 && command.equals("Select Comic")){
+            currentComic = comicList.get(selectedIndex);
+            new ComicbookreaderUI(currentComic.getPages());
 
         } else System.out.println("No comic selected.");
+
+
     }
 }
