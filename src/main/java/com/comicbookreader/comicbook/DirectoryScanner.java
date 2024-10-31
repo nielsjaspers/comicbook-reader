@@ -9,7 +9,8 @@ import java.util.stream.Stream;
 public class DirectoryScanner {
 
     public static List<String> getComicFilePaths(Path directory, String... extensions) {
-
+        CBZParser cbzParser = new CBZParser();
+        CBRParser cbrParser = new CBRParser();
         List<String> comicFiles = new ArrayList<>();
 
         try (Stream<Path> paths = Files.walk(directory, 1)) {  // Use walk with depth 1 to avoid subdirectories

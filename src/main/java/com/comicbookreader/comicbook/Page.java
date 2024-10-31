@@ -15,7 +15,9 @@ public class Page {
         this.path = path;
         this.image = image;
     }
-    public Page() {}
 
+    public String getPath() {
+        return path;
+    }
 }
 

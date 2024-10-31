@@ -8,20 +8,17 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-
+        ArrayList<Comicbook> comicbooks = new ArrayList<>();
         Path directory = Paths.get("imported_comics");
 
-        List<String> comicPath = DirectoryScanner.getComicFilePaths(directory, ".cbz", ".cbr", ".nhlcomic");
-      
         File importedComicPath = new File("imported_comics");
-
         if (!importedComicPath.exists()) {
             importedComicPath.mkdir();
         }
 
         // Initialiseert leeg Mainmenu -- Zorgt dat de app uberhaupt openblijft.
-        ArrayList<Comicbook> comicbooks = new ArrayList<>();
-        new Mainmenu(comicbooks);
+
+        new Mainmenu();
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
