@@ -2,11 +2,17 @@ package com.comicbookreader;
 import com.comicbookreader.comicbook.*;
 
 import java.io.*;
+import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
+        Path directory = Paths.get("imported_comics");
+
+        List<String> comicPath = DirectoryScanner.getComicFilePaths(directory, ".cbz", ".cbr", ".nhlcomic");
+      
         File importedComicPath = new File("imported_comics");
 
         if (!importedComicPath.exists()) {
