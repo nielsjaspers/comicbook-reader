@@ -39,6 +39,12 @@ public class Comicbook {
         this.pages = new ArrayList<>();
     }
 
+    public ArrayList<Page> invertPages() {
+        Collections.reverse(pages);
+        return pages;
+    }
+
+    // getters & setters
     public String getName() {
         return name;
     }
@@ -47,9 +53,47 @@ public class Comicbook {
         return pages;
     }
 
-    public ArrayList<Page> invertPages() {
-            Collections.reverse(pages);
-        return pages;
+    public int getProgression() {
+        return progression;
     }
+
+    public boolean getIsRead(){
+        return read;
+    }
+
+    public boolean getIsFavourite(){
+        return favourite;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void setProgression(Page page ,int progression){
+        int currentpage = page.getCurrentPageNumber();
+
+        if(currentpage < pages.size()){
+            this.progression = progression;
+            return;
+        }
+        setIsRead(true);
+    }
+
+    public void setIsRead(boolean read) {
+        this.read = read;
+    }
+
+    public void setFavourite(boolean favourite) {
+        this.favourite = favourite;
+    }
+
+    public void setPath(String path){
+        this.path = path;
+    }
+
 }
 

@@ -17,5 +17,9 @@ public class Page {
     }
     public Page() {}
 
+    public int getCurrentPageNumber() {
+        return number;
+    }
+
 }
 

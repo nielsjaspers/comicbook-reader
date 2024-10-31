@@ -19,6 +19,9 @@ public class Main {
             importedComicPath.mkdir();
         }
 
+        File appDataJson = new File("appdata/data.json");
+        File userDataJson = new File("userdata/data.json");
+
         // Initialiseert leeg Mainmenu -- Zorgt dat de app uberhaupt openblijft.
         ArrayList<Comicbook> comicbooks = new ArrayList<>();
         new Mainmenu(comicbooks);
