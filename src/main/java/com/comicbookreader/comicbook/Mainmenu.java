@@ -89,7 +89,7 @@ public class Mainmenu implements ActionListener {
                         pages = new CBZParser().extractPages(targetPath.toString());
                     }
 
-                    Comicbook comicbook = new Comicbook(selectedFile.getName(), pages, false);
+                    Comicbook comicbook = Comicbook.fromFilePath(selectedFile.toString(), pages);
                     addComic(comicbook);  // Voeg de nieuwe comic toe aan de bestaande lijst
                 } catch (IOException ex) {
                     System.err.println("Fout bij het verplaatsen van bestand: " + ex.getMessage());
