@@ -3,10 +3,8 @@ package com.comicbookreader.comicbook;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -43,14 +41,35 @@ public class Comicbook {
         this.pages = new ArrayList<>(pages);
     }
 
+    public Comicbook(String name, List<Page>pages, String path) {
+        this.name = name;
+        this.pages = new ArrayList<>(pages);
+        this.path = path;
+    }
+
+    public Comicbook() {
+    }
 
     public Comicbook(List<Page> pages) {
         this.pages = new ArrayList<>(pages);
     }
 
+
     public ArrayList<Page> invertPages() {
         Collections.reverse(pages);
         return pages;
+    }
+
+    public void loadPages() {
+        if (pages.isEmpty()) {
+            try {
+                this.pages = name.endsWith(".cbr")
+                        ? new CBRParser().extractPages(this.path)
+                        : new CBZParser().extractPages(this.path);
+            } catch (IOException e) {
+                System.err.println("Error reloading pages: " + e.getMessage());
+            }
+        }
     }
 
     // getters & setters
@@ -85,6 +104,10 @@ public class Comicbook {
 
     public void setName(String name){
         this.name = name;
+    }
+
+    public void setPages(ArrayList<Page> pages) {
+        this.pages = pages;
     }
 
     public void setProgression(Page page ,int progression){
