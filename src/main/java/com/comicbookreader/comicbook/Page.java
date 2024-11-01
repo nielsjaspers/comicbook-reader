@@ -19,11 +19,13 @@ public class Page {
         this.path = path;
         this.image = image;
     }
-    public Page() {}
 
     public int getCurrentPageNumber() {
         return number;
     }
 
+    public String getPath() {
+        return path;
+    }
 }
 

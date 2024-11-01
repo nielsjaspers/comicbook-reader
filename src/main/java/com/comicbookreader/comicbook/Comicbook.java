@@ -3,6 +3,9 @@ package com.comicbookreader.comicbook;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,13 +38,14 @@ public class Comicbook {
     }
 
 
-    public Comicbook(String name) {
+    public Comicbook(String name, List<Page>pages) {
         this.name = name;
-        this.pages = new ArrayList<>();
+        this.pages = new ArrayList<>(pages);
     }
 
-    public Comicbook() {
-        this.pages = new ArrayList<>();
+
+    public Comicbook(List<Page> pages) {
+        this.pages = new ArrayList<>(pages);
     }
 
     public ArrayList<Page> invertPages() {
@@ -64,6 +68,11 @@ public class Comicbook {
 
     public boolean getIsRead(){
         return read;
+    }
+    public static Comicbook fromFilePath(String filePath, List<Page> pages) {
+        String name = filePath.substring(filePath.lastIndexOf("/") + 1, filePath.lastIndexOf("."));
+        System.out.println(name);
+        return new Comicbook(name, pages);
     }
 
     public boolean getIsFavourite(){
