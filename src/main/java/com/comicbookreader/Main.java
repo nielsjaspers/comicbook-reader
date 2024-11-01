@@ -8,21 +8,43 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        // Setup the application directories
+        setupDataDirectories();
 
-        new Mainmenu();
+        // Perform directory scan or load comics from JSON
+        Path comicDirectory = Paths.get("imported_comics");
+        List<String> comicPaths = DirectoryScanner.getComicFilePaths(comicDirectory, "cbr", "cbz", "nhlcomic");
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                CBRParser cbrParser = new CBRParser();
-                try {
-                    cbrParser.cleanup();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        // Load comics from paths and initialize the Mainmenu
+        ComicBookLoader.loadComics(comicPaths);
+        ArrayList<Comicbook> comicList = ComicBookLoader.getComicList();
+        new Mainmenu(comicList);
+
+        // Cleanup unzipped .cbr comic books on shutdown
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                new CBRParser().cleanup();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        });
+        }));
+    }
 
+    private static void setupDataDirectories() throws IOException {
+        Path appDataDirectory = Paths.get("appdata");
+        Path userDataDirectory = Paths.get("userdata");
 
+        Files.createDirectories(appDataDirectory);
+        Files.createDirectories(userDataDirectory);
+
+        File appDataJson = new File("appdata/data.json");
+        File userDataJson = new File("userdata/data.json");
+
+        if (!appDataJson.exists()) {
+            Files.writeString(appDataJson.toPath(), "[]"); // Initialize as empty array
+        }
+        if (!userDataJson.exists()) {
+            Files.writeString(userDataJson.toPath(), "{}"); // Initialize with empty JSON object
+        }
     }
 }

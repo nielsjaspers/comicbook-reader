@@ -1,5 +1,7 @@
 package com.comicbookreader.comicbook;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -12,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-
+import java.util.List;
 
 public class Mainmenu implements ActionListener {
 
@@ -24,17 +26,27 @@ public class Mainmenu implements ActionListener {
     private int scrollPaneWidth;
     private Comicbook currentComic;
 
-    public Mainmenu() {
-        Path comicDirectory = Path.of("imported_comics");
-        ComicBookLoader.startDirectoryScan(comicDirectory, "cbr", "cbz", "nhlcomic");
+    private String appDataPath = "appdata/data.json";
+    private File appDataFile = new File(appDataPath);
 
-        this.comicList = ComicBookLoader.getComicList(); // Retrieve the loaded comics
+    public Mainmenu(ArrayList<Comicbook> comicList) {
+        this.comicList = comicList; // Use the loaded comics directly
         initUI();
     }
 
     public void addComic(Comicbook comicbook) {
         comicList.add(comicbook);
-        listModel.addElement(comicbook.getName());
+        listModel.addElement(comicbook.getName()); // Update display list
+
+        // Save new comic to JSON file
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            List<Comicbook> tempComicList = new ArrayList<>(comicList);
+            mapper.writeValue(appDataFile, tempComicList);
+            System.out.println("Comic added to JSON: " + comicbook.getName());
+        } catch (IOException e) {
+            System.err.println("Error saving to JSON: " + e.getMessage());
+        }
     }
 
     public void initUI() {
@@ -45,75 +57,73 @@ public class Mainmenu implements ActionListener {
         frame.setSize(dim.width, dim.height);
 
         scrollPaneWidth = frame.getSize().width / 8;
-
         frame.setLayout(new BorderLayout());
 
-        //Gets the list of comics
-        getComicList(comicList);
+        // Display comics in list
+        getComicList();
         JScrollPane scrollPane = new JScrollPane(displayList);
         scrollPane.setPreferredSize(new Dimension(scrollPaneWidth, frame.getHeight()));
         frame.add(scrollPane, BorderLayout.WEST);
 
-        //shows the first page when clicked on a comic
         imageLabel = new JLabel();
         frame.add(imageLabel, BorderLayout.CENTER);
 
         JButton selectButton = new JButton("Select Comic");
         selectButton.addActionListener(this);
 
-        JButton InvertButton = new JButton("Invert Comic");
-        InvertButton.addActionListener(this);
+        JButton invertButton = new JButton("Invert Comic");
+        invertButton.addActionListener(this);
 
         JButton addButton = new JButton("Import Comic");
         addButton.setPreferredSize(new Dimension(scrollPaneWidth, addButton.getPreferredSize().height));
 
-        addButton.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Comic Book Files", "cbr", "cbz", "nhlcomic"));
+        addButton.addActionListener(e -> importComic());
 
-            int result = fileChooser.showOpenDialog(frame);
-            if (result == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                Path targetDirectory = Path.of("imported_comics");
-
-                try {
-                    Path targetPath = targetDirectory.resolve(selectedFile.getName());
-                    Files.move(selectedFile.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-                    System.out.println("Bestand verplaatst naar: " + targetPath);
-
-                    ArrayList<Page> pages;
-                    if (selectedFile.toString().endsWith(".cbr")) {
-                        pages = new CBRParser().extractPages(targetPath.toString());
-                    } else {
-                        pages = new CBZParser().extractPages(targetPath.toString());
-                    }
-
-                    Comicbook comicbook = Comicbook.fromFilePath(selectedFile.toString(), pages);
-                    addComic(comicbook);  // Voeg de nieuwe comic toe aan de bestaande lijst
-                } catch (IOException ex) {
-                    System.err.println("Fout bij het verplaatsen van bestand: " + ex.getMessage());
-                }
-            }
-        });
-
-
-        // Paneel met knoppen onder in het scherm -- Voor Import, Select & Invert
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.add(selectButton, BorderLayout.CENTER);
-        bottomPanel.add(InvertButton, BorderLayout.EAST);
+        bottomPanel.add(invertButton, BorderLayout.EAST);
         bottomPanel.add(addButton, BorderLayout.WEST);
 
         frame.add(bottomPanel, BorderLayout.SOUTH);
-
         frame.setVisible(true);
     }
 
-    public void getComicList(ArrayList<Comicbook> comicList) {
-        //get the list of comics
+    private void importComic() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Comic Book Files", "cbr", "cbz", "nhlcomic"));
+
+        int result = fileChooser.showOpenDialog(frame);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            Path targetDirectory = Path.of("imported_comics");
+
+            try {
+                Path targetPath = targetDirectory.resolve(selectedFile.getName());
+                Files.move(selectedFile.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("File moved to: " + targetPath);
+
+                ArrayList<Page> pages;
+                if (selectedFile.toString().endsWith(".cbr")) {
+                    pages = new CBRParser().extractPages(targetPath.toString());
+                } else {
+                    pages = new CBZParser().extractPages(targetPath.toString());
+                }
+
+                Comicbook comicbook = Comicbook.fromFilePath(targetPath.toString(), pages, targetPath.toString());
+
+                comicbook.setPath(targetPath.toString());
+                addComic(comicbook);
+
+            } catch (IOException e) {
+                System.err.println("Error moving file: " + e.getMessage());
+            }
+        }
+    }
+
+    public void getComicList() {
         listModel = new DefaultListModel<>();
         for (Comicbook comic : comicList) {
-            System.out.println(comic);
             listModel.addElement(comic.getName());
         }
         displayList = new JList<>(listModel);
@@ -126,9 +136,8 @@ public class Mainmenu implements ActionListener {
                     int selectedIndex = displayList.getSelectedIndex();
                     if (selectedIndex != -1) {
                         currentComic = comicList.get(selectedIndex);
-                        System.out.println("Comic selected: " + currentComic.getName());
                         Page firstPage = currentComic.getPages().getFirst();
-                        displayPage(currentComic.getPages().get(0));
+                        displayPage(firstPage);
                     }
                 }
             }
@@ -137,30 +146,28 @@ public class Mainmenu implements ActionListener {
 
     private void displayPage(Page page) {
         if (page.image != null) {
-            Image scaledImage = page.image.getScaledInstance(500, 700, Image.SCALE_SMOOTH);  // Adjust dimensions as needed
+            Image scaledImage = page.image.getScaledInstance(500, 700, Image.SCALE_SMOOTH);
             imageLabel.setIcon(new ImageIcon(scaledImage));
         } else {
             imageLabel.setText("No image available for this page.");
         }
     }
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
 
-
         if (command.equals("Invert Comic") && currentComic != null) {
             currentComic.invertPages();
-            displayPage(currentComic.getPages().get(0));
+            displayPage(currentComic.getPages().getFirst());
+        } else if (command.equals("Select Comic")) {
+            int selectedIndex = displayList.getSelectedIndex();
+            if (selectedIndex != -1) {
+                currentComic = comicList.get(selectedIndex);
+                new ComicbookreaderUI(currentComic.getPages());
+            } else {
+                System.out.println("No comic selected.");
+            }
         }
-        int selectedIndex = displayList.getSelectedIndex();
-        if (selectedIndex != -1 && command.equals("Select Comic")){
-            currentComic = comicList.get(selectedIndex);
-            new ComicbookreaderUI(currentComic.getPages());
-
-        } else System.out.println("No comic selected.");
-
-
     }
 }
