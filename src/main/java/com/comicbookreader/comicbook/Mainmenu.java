@@ -110,7 +110,9 @@ public class Mainmenu implements ActionListener {
                     pages = new CBZParser().extractPages(targetPath.toString());
                 }
 
-                Comicbook comicbook = Comicbook.fromFilePath(targetPath.toString(), pages);
+                Comicbook comicbook = Comicbook.fromFilePath(targetPath.toString(), pages, targetPath.toString());
+
+                comicbook.setPath(targetPath.toString());
                 addComic(comicbook);
 
             } catch (IOException e) {

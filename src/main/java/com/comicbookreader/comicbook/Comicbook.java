@@ -88,10 +88,11 @@ public class Comicbook {
     public boolean getIsRead(){
         return read;
     }
-    public static Comicbook fromFilePath(String filePath, List<Page> pages) {
+
+    public static Comicbook fromFilePath(String filePath, List<Page> pages, String path) {
         String name = filePath.substring(filePath.lastIndexOf("/") + 1, filePath.lastIndexOf("."));
         System.out.println(name);
-        return new Comicbook(name, pages);
+        return new Comicbook(name, pages, path);
     }
 
     public boolean getIsFavourite(){

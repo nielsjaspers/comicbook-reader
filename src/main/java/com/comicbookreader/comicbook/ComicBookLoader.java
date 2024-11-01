@@ -24,7 +24,7 @@ public class ComicBookLoader {
                 System.out.println("Unsupported file type: " + filePath);
                 return;
             }
-            Comicbook comicbook = Comicbook.fromFilePath(filePath, pages);
+            Comicbook comicbook = Comicbook.fromFilePath(filePath, pages, filePath);
             comicList.add(comicbook);
         } catch (IOException e) {
             System.err.println("Error loading comic: " + e.getMessage());
