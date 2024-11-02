@@ -29,10 +29,8 @@ public class Mainmenu implements ActionListener {
     private File appDataFile = new File(appDataPath);
 
 
-    public Mainmenu() {
-        Path comicDirectory = Path.of("imported_comics");
-        ComicBookLoader.startDirectoryScan(comicDirectory, "cbr", "cbz", "nhlcomic");
-        this.comicList = ComicBookLoader.getComicList(); // Retrieve the loaded comics
+    public Mainmenu(ArrayList<Comicbook> comicList) {
+        this.comicList = comicList; // Retrieve the loaded comics
 
         initUI();
     }
@@ -69,8 +67,8 @@ public class Mainmenu implements ActionListener {
         westPanel.add(titleLabel, BorderLayout.NORTH); // Add to west panel
 
         // Get the list of comics
-        getComicList(comicList);
-        scrollPaneWidth = frame.getSize().width / 8;
+        getComicList();
+        int scrollPaneWidth = frame.getSize().width / 8;
         JScrollPane scrollPane = new JScrollPane(displayList);
         scrollPane.setPreferredSize(new Dimension(scrollPaneWidth, frame.getHeight())); // Set width of JList
         westPanel.add(scrollPane, BorderLayout.CENTER);
@@ -92,54 +90,18 @@ public class Mainmenu implements ActionListener {
         invertButton.addActionListener(this);
 
         JButton addButton = new JButton("Import Comic");
-      
-        addButton.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Comic Book Files", "cbr", "cbz", "nhlcomic"));
-
-            int result = fileChooser.showOpenDialog(frame);
-            if (result == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                Path targetDirectory = Path.of("imported_comics");
-
-                try {
-                    Path targetPath = targetDirectory.resolve(selectedFile.getName());
-                    Files.move(selectedFile.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-                    System.out.println("Bestand verplaatst naar: " + targetPath);
-
-                    ArrayList<Page> pages;
-                    if (selectedFile.toString().endsWith(".cbr")) {
-                        pages = new CBRParser().extractPages(targetPath.toString());
-                    } else {
-                        pages = new CBZParser().extractPages(targetPath.toString());
-                    }
-
-                    Comicbook comicbook = Comicbook.fromFilePath(selectedFile.toString(), pages);
-                    addComic(comicbook);  // Voeg de nieuwe comic toe aan de bestaande lijst
-                } catch (IOException ex) {
-                    System.err.println("Fout bij het verplaatsen van bestand: " + ex.getMessage());
-                }
-            }
-        });
         addButton.addActionListener(e -> importComic());
 
         // Panel for the Import, Select, invert buttons
         westPanel.add(addButton, BorderLayout.SOUTH); // Add to the bottom panel
-        centerPanel.add(selectButton, BorderLayout.SOUTH); // Centered in the bottom
         eastPanel.add(invertButton, BorderLayout.SOUTH); // East of the bottom
+        centerPanel.add(selectButton, BorderLayout.SOUTH); // Centered in the bottom
 
         // Add panels to the main frame
         mainPanel.add(westPanel, BorderLayout.WEST); // West side for JList
         mainPanel.add(eastPanel, BorderLayout.EAST); // East side for InvertButton
         mainPanel.add(centerPanel, BorderLayout.CENTER); // Center for image and number
 
-        // Adds panel to frame
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.add(selectButton, BorderLayout.CENTER);
-        bottomPanel.add(invertButton, BorderLayout.EAST);
-        bottomPanel.add(addButton, BorderLayout.WEST);
-      
         frame.add(mainPanel);
         frame.setVisible(true);
     }
