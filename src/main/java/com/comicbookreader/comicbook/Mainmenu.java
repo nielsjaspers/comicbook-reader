@@ -170,4 +170,11 @@ public class Mainmenu implements ActionListener {
             }
         }
     }
+    public JList<String> getDisplayList() {
+        return displayList;
+    }
+
+    public JLabel getImageLabel() {
+        return imageLabel;
+    }
 }
