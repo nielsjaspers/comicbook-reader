@@ -1,5 +1,7 @@
 package com.comicbookreader.comicbook;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -12,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-
+import java.util.List;
 
 public class Mainmenu implements ActionListener {
 
@@ -23,17 +25,31 @@ public class Mainmenu implements ActionListener {
     private ArrayList<Comicbook> comicList;
     private Comicbook currentComic;
     private JLabel numberLabel;
+    private String appDataPath = "appdata/data.json";
+    private File appDataFile = new File(appDataPath);
+
 
     public Mainmenu() {
         Path comicDirectory = Path.of("imported_comics");
         ComicBookLoader.startDirectoryScan(comicDirectory, "cbr", "cbz", "nhlcomic");
         this.comicList = ComicBookLoader.getComicList(); // Retrieve the loaded comics
+
         initUI();
     }
 
     public void addComic(Comicbook comicbook) {
         comicList.add(comicbook);
-        listModel.addElement(comicbook.getName());
+        listModel.addElement(comicbook.getName()); // Update display list
+
+        // Save new comic to JSON file
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            List<Comicbook> tempComicList = new ArrayList<>(comicList);
+            mapper.writeValue(appDataFile, tempComicList);
+            System.out.println("Comic added to JSON: " + comicbook.getName());
+        } catch (IOException e) {
+            System.err.println("Error saving to JSON: " + e.getMessage());
+        }
     }
 
     public void initUI() {
@@ -54,8 +70,9 @@ public class Mainmenu implements ActionListener {
 
         // Get the list of comics
         getComicList(comicList);
+        scrollPaneWidth = frame.getSize().width / 8;
         JScrollPane scrollPane = new JScrollPane(displayList);
-        scrollPane.setPreferredSize(new Dimension(200, frame.getHeight())); // Set width of JList
+        scrollPane.setPreferredSize(new Dimension(scrollPaneWidth, frame.getHeight())); // Set width of JList
         westPanel.add(scrollPane, BorderLayout.CENTER);
 
         // Number Label
@@ -63,7 +80,6 @@ public class Mainmenu implements ActionListener {
         numberLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center the number label
         centerPanel.add(numberLabel, BorderLayout.NORTH); // Add number label to the center panel
 
-        // Preview of the comic
         imageLabel = new JLabel();
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center the image
         centerPanel.add(imageLabel, BorderLayout.CENTER); // Add image label to the center panel
@@ -76,6 +92,7 @@ public class Mainmenu implements ActionListener {
         invertButton.addActionListener(this);
 
         JButton addButton = new JButton("Import Comic");
+      
         addButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -105,7 +122,7 @@ public class Mainmenu implements ActionListener {
                 }
             }
         });
-
+        addButton.addActionListener(e -> importComic());
 
         // Panel for the Import, Select, invert buttons
         westPanel.add(addButton, BorderLayout.SOUTH); // Add to the bottom panel
@@ -118,15 +135,51 @@ public class Mainmenu implements ActionListener {
         mainPanel.add(centerPanel, BorderLayout.CENTER); // Center for image and number
 
         // Adds panel to frame
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(selectButton, BorderLayout.CENTER);
+        bottomPanel.add(invertButton, BorderLayout.EAST);
+        bottomPanel.add(addButton, BorderLayout.WEST);
+      
         frame.add(mainPanel);
         frame.setVisible(true);
     }
 
-    public void getComicList(ArrayList<Comicbook> comicList) {
-        //get the list of comics
+    private void importComic() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Comic Book Files", "cbr", "cbz", "nhlcomic"));
+
+        int result = fileChooser.showOpenDialog(frame);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            Path targetDirectory = Path.of("imported_comics");
+
+            try {
+                Path targetPath = targetDirectory.resolve(selectedFile.getName());
+                Files.move(selectedFile.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("File moved to: " + targetPath);
+
+                ArrayList<Page> pages;
+                if (selectedFile.toString().endsWith(".cbr")) {
+                    pages = new CBRParser().extractPages(targetPath.toString());
+                } else {
+                    pages = new CBZParser().extractPages(targetPath.toString());
+                }
+
+                Comicbook comicbook = Comicbook.fromFilePath(targetPath.toString(), pages, targetPath.toString());
+
+                comicbook.setPath(targetPath.toString());
+                addComic(comicbook);
+
+            } catch (IOException e) {
+                System.err.println("Error moving file: " + e.getMessage());
+            }
+        }
+    }
+
+    public void getComicList() {
         listModel = new DefaultListModel<>();
         for (Comicbook comic : comicList) {
-            System.out.println(comic);
             listModel.addElement(comic.getName());
         }
         displayList = new JList<>(listModel);
@@ -139,9 +192,8 @@ public class Mainmenu implements ActionListener {
                     int selectedIndex = displayList.getSelectedIndex();
                     if (selectedIndex != -1) {
                         currentComic = comicList.get(selectedIndex);
-                        System.out.println("Comic selected: " + currentComic.getName());
                         Page firstPage = currentComic.getPages().getFirst();
-                        displayPage(currentComic.getPages().get(0));
+                        displayPage(firstPage);
                     }
                 }
             }
@@ -152,13 +204,12 @@ public class Mainmenu implements ActionListener {
         if (page.image != null) {
             int numberOfPages = currentComic.getPages().size(); // Get the number of pages from the current comic
             numberLabel.setText("Number of pages: " + numberOfPages);
-            Image scaledImage = page.image.getScaledInstance(500, 700, Image.SCALE_SMOOTH);  // Adjust dimensions as needed
+            Image scaledImage = page.image.getScaledInstance(500, 700, Image.SCALE_SMOOTH); 
             imageLabel.setIcon(new ImageIcon(scaledImage));
         } else {
             imageLabel.setText("No image available for this page.");
         }
     }
-
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -166,15 +217,22 @@ public class Mainmenu implements ActionListener {
 
         if (command.equals("Invert Comic") && currentComic != null) {
             currentComic.invertPages();
-            displayPage(currentComic.getPages().get(0));
+            displayPage(currentComic.getPages().getFirst());
+        } else if (command.equals("Select Comic")) {
+            int selectedIndex = displayList.getSelectedIndex();
+            if (selectedIndex != -1) {
+                currentComic = comicList.get(selectedIndex);
+                new ComicbookreaderUI(currentComic.getPages());
+            } else {
+                System.out.println("No comic selected.");
+            }
         }
-        int selectedIndex = displayList.getSelectedIndex();
-        if (selectedIndex != -1 && command.equals("Select Comic")){
-            currentComic = comicList.get(selectedIndex);
-            new ComicbookreaderUI(currentComic.getPages());
+    }
+    public JList<String> getDisplayList() {
+        return displayList;
+    }
 
-        } else System.out.println("No comic selected.");
-
-
+    public JLabel getImageLabel() {
+        return imageLabel;
     }
 }

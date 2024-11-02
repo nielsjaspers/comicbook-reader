@@ -8,10 +8,7 @@ import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class CBRParser implements FileParser {
@@ -43,7 +40,7 @@ public class CBRParser implements FileParser {
                         rar.extractFile(fileHeader, fos);
                         try {
                             BufferedImage image = ImageIO.read(extractedFile);
-                            pages.add(new Page(pagenumber++, extractedFile.getAbsolutePath(), image));
+                            pages.add(new Page(pagenumber++, extractedFile.toString(), image));
                         } catch (IOException e) {
                             System.err.println("Error reading image " + extractedFile.getAbsolutePath());
                         }
