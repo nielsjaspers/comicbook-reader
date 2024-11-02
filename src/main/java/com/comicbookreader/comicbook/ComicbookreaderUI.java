@@ -31,7 +31,6 @@ public class ComicbookreaderUI implements ActionListener {
         frame = new JFrame("Comic Book Reader");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
         frame.setSize(dim.width, dim.height);
 
         frame.setLayout(new BorderLayout());

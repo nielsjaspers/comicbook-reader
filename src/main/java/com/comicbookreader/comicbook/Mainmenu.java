@@ -23,14 +23,17 @@ public class Mainmenu implements ActionListener {
     private JList<String> displayList;
     private DefaultListModel<String> listModel;
     private ArrayList<Comicbook> comicList;
-    private int scrollPaneWidth;
     private Comicbook currentComic;
-
+    private JLabel numberLabel;
     private String appDataPath = "appdata/data.json";
     private File appDataFile = new File(appDataPath);
 
-    public Mainmenu(ArrayList<Comicbook> comicList) {
-        this.comicList = comicList; // Use the loaded comics directly
+
+    public Mainmenu() {
+        Path comicDirectory = Path.of("imported_comics");
+        ComicBookLoader.startDirectoryScan(comicDirectory, "cbr", "cbz", "nhlcomic");
+        this.comicList = ComicBookLoader.getComicList(); // Retrieve the loaded comics
+
         initUI();
     }
 
@@ -52,22 +55,36 @@ public class Mainmenu implements ActionListener {
     public void initUI() {
         frame = new JFrame("Comic Book Reader - Main Menu");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize(dim.width, dim.height);
 
-        scrollPaneWidth = frame.getSize().width / 8;
-        frame.setLayout(new BorderLayout());
+        // Creates panels for organization
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        JPanel westPanel = new JPanel(new BorderLayout());
+        JPanel eastPanel = new JPanel(new BorderLayout());
+        JPanel centerPanel = new JPanel(new BorderLayout());
 
-        // Display comics in list
-        getComicList();
+        // Title Label
+        JLabel titleLabel = new JLabel("Comic Books");
+        westPanel.add(titleLabel, BorderLayout.NORTH); // Add to west panel
+
+        // Get the list of comics
+        getComicList(comicList);
+        scrollPaneWidth = frame.getSize().width / 8;
         JScrollPane scrollPane = new JScrollPane(displayList);
-        scrollPane.setPreferredSize(new Dimension(scrollPaneWidth, frame.getHeight()));
-        frame.add(scrollPane, BorderLayout.WEST);
+        scrollPane.setPreferredSize(new Dimension(scrollPaneWidth, frame.getHeight())); // Set width of JList
+        westPanel.add(scrollPane, BorderLayout.CENTER);
+
+        // Number Label
+        numberLabel = new JLabel("Number of pages: 0");
+        numberLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center the number label
+        centerPanel.add(numberLabel, BorderLayout.NORTH); // Add number label to the center panel
 
         imageLabel = new JLabel();
-        frame.add(imageLabel, BorderLayout.CENTER);
+        imageLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center the image
+        centerPanel.add(imageLabel, BorderLayout.CENTER); // Add image label to the center panel
 
+        // Buttons
         JButton selectButton = new JButton("Select Comic");
         selectButton.addActionListener(this);
 
@@ -75,16 +92,55 @@ public class Mainmenu implements ActionListener {
         invertButton.addActionListener(this);
 
         JButton addButton = new JButton("Import Comic");
-        addButton.setPreferredSize(new Dimension(scrollPaneWidth, addButton.getPreferredSize().height));
+      
+        addButton.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Comic Book Files", "cbr", "cbz", "nhlcomic"));
 
+            int result = fileChooser.showOpenDialog(frame);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                Path targetDirectory = Path.of("imported_comics");
+
+                try {
+                    Path targetPath = targetDirectory.resolve(selectedFile.getName());
+                    Files.move(selectedFile.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+                    System.out.println("Bestand verplaatst naar: " + targetPath);
+
+                    ArrayList<Page> pages;
+                    if (selectedFile.toString().endsWith(".cbr")) {
+                        pages = new CBRParser().extractPages(targetPath.toString());
+                    } else {
+                        pages = new CBZParser().extractPages(targetPath.toString());
+                    }
+
+                    Comicbook comicbook = Comicbook.fromFilePath(selectedFile.toString(), pages);
+                    addComic(comicbook);  // Voeg de nieuwe comic toe aan de bestaande lijst
+                } catch (IOException ex) {
+                    System.err.println("Fout bij het verplaatsen van bestand: " + ex.getMessage());
+                }
+            }
+        });
         addButton.addActionListener(e -> importComic());
 
+        // Panel for the Import, Select, invert buttons
+        westPanel.add(addButton, BorderLayout.SOUTH); // Add to the bottom panel
+        centerPanel.add(selectButton, BorderLayout.SOUTH); // Centered in the bottom
+        eastPanel.add(invertButton, BorderLayout.SOUTH); // East of the bottom
+
+        // Add panels to the main frame
+        mainPanel.add(westPanel, BorderLayout.WEST); // West side for JList
+        mainPanel.add(eastPanel, BorderLayout.EAST); // East side for InvertButton
+        mainPanel.add(centerPanel, BorderLayout.CENTER); // Center for image and number
+
+        // Adds panel to frame
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.add(selectButton, BorderLayout.CENTER);
         bottomPanel.add(invertButton, BorderLayout.EAST);
         bottomPanel.add(addButton, BorderLayout.WEST);
-
-        frame.add(bottomPanel, BorderLayout.SOUTH);
+      
+        frame.add(mainPanel);
         frame.setVisible(true);
     }
 
@@ -146,7 +202,9 @@ public class Mainmenu implements ActionListener {
 
     private void displayPage(Page page) {
         if (page.image != null) {
-            Image scaledImage = page.image.getScaledInstance(500, 700, Image.SCALE_SMOOTH);
+            int numberOfPages = currentComic.getPages().size(); // Get the number of pages from the current comic
+            numberLabel.setText("Number of pages: " + numberOfPages);
+            Image scaledImage = page.image.getScaledInstance(500, 700, Image.SCALE_SMOOTH); 
             imageLabel.setIcon(new ImageIcon(scaledImage));
         } else {
             imageLabel.setText("No image available for this page.");
