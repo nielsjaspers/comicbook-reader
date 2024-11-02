@@ -36,6 +36,16 @@ public class Main {
         }));
     }
 
+    /**
+     * Initializes application data directories and JSON files.
+     * <p>
+     * Creates the "appdata" and "userdata" directories if they do not already exist.
+     * Additionally, initializes "data.json" files in each directory with default values:
+     * an empty array for "appdata/data.json" and an empty JSON object for "userdata/data.json".
+     * </p>
+     *
+     * @throws IOException if an I/O error occurs during directory or file creation.
+     */
     private static void setupDataDirectories() throws IOException {
         Path appDataDirectory = Paths.get("appdata");
         Path userDataDirectory = Paths.get("userdata");

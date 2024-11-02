@@ -109,6 +109,16 @@ public class Mainmenu implements ActionListener {
         frame.setVisible(true);
     }
 
+    /**
+     * Imports a comic book file selected by the user through a file chooser dialog.
+     * <p>
+     * This method opens a {@link JFileChooser} to allow the user to select a comic book file
+     * with supported extensions (.cbr, .cbz, .nhlcomic). Upon selection, it moves the file to a
+     * designated target directory ("imported_comics") and extracts its pages using the appropriate
+     * parser based on the file extension. A new {@link Comicbook} object is created and added to
+     * the comic list.
+     * </p>
+     */
     private void importComic() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
