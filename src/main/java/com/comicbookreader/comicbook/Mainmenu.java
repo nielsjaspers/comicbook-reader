@@ -21,13 +21,12 @@ public class Mainmenu implements ActionListener {
     private JList<String> displayList;
     private DefaultListModel<String> listModel;
     private ArrayList<Comicbook> comicList;
-    private int scrollPaneWidth;
     private Comicbook currentComic;
+    private JLabel numberLabel;
 
     public Mainmenu() {
         Path comicDirectory = Path.of("imported_comics");
         ComicBookLoader.startDirectoryScan(comicDirectory, "cbr", "cbz", "nhlcomic");
-
         this.comicList = ComicBookLoader.getComicList(); // Retrieve the loaded comics
         initUI();
     }
@@ -40,33 +39,43 @@ public class Mainmenu implements ActionListener {
     public void initUI() {
         frame = new JFrame("Comic Book Reader - Main Menu");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize(dim.width, dim.height);
 
-        scrollPaneWidth = frame.getSize().width / 8;
+        // Creates panels for organization
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        JPanel westPanel = new JPanel(new BorderLayout());
+        JPanel eastPanel = new JPanel(new BorderLayout());
+        JPanel centerPanel = new JPanel(new BorderLayout());
 
-        frame.setLayout(new BorderLayout());
+        // Title Label
+        JLabel titleLabel = new JLabel("Comic Books");
+        westPanel.add(titleLabel, BorderLayout.NORTH); // Add to west panel
 
-        //Gets the list of comics
+        // Get the list of comics
         getComicList(comicList);
         JScrollPane scrollPane = new JScrollPane(displayList);
-        scrollPane.setPreferredSize(new Dimension(scrollPaneWidth, frame.getHeight()));
-        frame.add(scrollPane, BorderLayout.WEST);
+        scrollPane.setPreferredSize(new Dimension(200, frame.getHeight())); // Set width of JList
+        westPanel.add(scrollPane, BorderLayout.CENTER);
 
-        //shows the first page when clicked on a comic
+        // Number Label
+        numberLabel = new JLabel("Number of pages: 0");
+        numberLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center the number label
+        centerPanel.add(numberLabel, BorderLayout.NORTH); // Add number label to the center panel
+
+        // Preview of the comic
         imageLabel = new JLabel();
-        frame.add(imageLabel, BorderLayout.CENTER);
+        imageLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center the image
+        centerPanel.add(imageLabel, BorderLayout.CENTER); // Add image label to the center panel
 
+        // Buttons
         JButton selectButton = new JButton("Select Comic");
         selectButton.addActionListener(this);
 
-        JButton InvertButton = new JButton("Invert Comic");
-        InvertButton.addActionListener(this);
+        JButton invertButton = new JButton("Invert Comic");
+        invertButton.addActionListener(this);
 
         JButton addButton = new JButton("Import Comic");
-        addButton.setPreferredSize(new Dimension(scrollPaneWidth, addButton.getPreferredSize().height));
-
         addButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -98,14 +107,18 @@ public class Mainmenu implements ActionListener {
         });
 
 
-        // Paneel met knoppen onder in het scherm -- Voor Import, Select & Invert
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.add(selectButton, BorderLayout.CENTER);
-        bottomPanel.add(InvertButton, BorderLayout.EAST);
-        bottomPanel.add(addButton, BorderLayout.WEST);
+        // Panel for the Import, Select, invert buttons
+        westPanel.add(addButton, BorderLayout.SOUTH); // Add to the bottom panel
+        centerPanel.add(selectButton, BorderLayout.SOUTH); // Centered in the bottom
+        eastPanel.add(invertButton, BorderLayout.SOUTH); // East of the bottom
 
-        frame.add(bottomPanel, BorderLayout.SOUTH);
+        // Add panels to the main frame
+        mainPanel.add(westPanel, BorderLayout.WEST); // West side for JList
+        mainPanel.add(eastPanel, BorderLayout.EAST); // East side for InvertButton
+        mainPanel.add(centerPanel, BorderLayout.CENTER); // Center for image and number
 
+        // Adds panel to frame
+        frame.add(mainPanel);
         frame.setVisible(true);
     }
 
@@ -137,6 +150,8 @@ public class Mainmenu implements ActionListener {
 
     private void displayPage(Page page) {
         if (page.image != null) {
+            int numberOfPages = currentComic.getPages().size(); // Get the number of pages from the current comic
+            numberLabel.setText("Number of pages: " + numberOfPages);
             Image scaledImage = page.image.getScaledInstance(500, 700, Image.SCALE_SMOOTH);  // Adjust dimensions as needed
             imageLabel.setIcon(new ImageIcon(scaledImage));
         } else {
@@ -148,7 +163,6 @@ public class Mainmenu implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
-
 
         if (command.equals("Invert Comic") && currentComic != null) {
             currentComic.invertPages();
