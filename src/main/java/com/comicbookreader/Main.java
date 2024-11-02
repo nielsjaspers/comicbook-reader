@@ -1,6 +1,7 @@
 package com.comicbookreader;
 import com.comicbookreader.comicbook.*;
 
+import javax.swing.*;
 import java.io.*;
 import java.nio.file.*;
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+
         // Setup the application directories
         setupDataDirectories();
 
@@ -19,6 +22,9 @@ public class Main {
         ComicBookLoader.loadComics(comicPaths);
         ArrayList<Comicbook> comicList = ComicBookLoader.getComicList();
         new Mainmenu(comicList);
+
+        // Start native Swing GUI
+        SwingUtilities.invokeLater(SettingsMenu::new);
 
         // Cleanup unzipped .cbr comic books on shutdown
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
