@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         System.setProperty("apple.laf.useScreenMenuBar", "true");
 
-        // Setup the application directories
+        // Set up the application directories
         setupDataDirectories();
 
         // Perform directory scan or load comics from JSON
