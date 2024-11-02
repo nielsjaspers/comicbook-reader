@@ -20,6 +20,11 @@ public class DirectoryScanner {
         String appDataPath = "appdata/data.json";
         File appDataFile = new File(appDataPath);
 
+        // Controleer of het userdata bestand bestaat
+        if (!userDataFile.exists()) {
+            throw new IOException("Cannot read userdata: " + userDataPath);
+        }
+
         // Load userdata to check initial scan status
         Userdata userdata = mapper.readValue(userDataFile, Userdata.class);
 
