@@ -102,6 +102,9 @@ public class Mainmenu implements ActionListener {
         mainPanel.add(eastPanel, BorderLayout.EAST); // East side for InvertButton
         mainPanel.add(centerPanel, BorderLayout.CENTER); // Center for image and number
 
+        SettingsMenu settingsMenu = new SettingsMenu();
+        frame.setJMenuBar(settingsMenu.getMenuBar());
+
         frame.add(mainPanel);
         frame.setVisible(true);
     }
