@@ -6,7 +6,7 @@
 
     <groupId>org.comicbookreader</groupId>
     <artifactId>comicbook-reader</artifactId>
-    <version>1.0-alpha</version>
+    <version>1.0-rc1</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

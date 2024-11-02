@@ -60,6 +60,15 @@ public class Comicbook {
         return pages;
     }
 
+    /**
+     * Loads pages from a comic archive if the pages list is empty.
+     * <p>
+     * This method checks if the {@code pages} list is empty and, if so, determines the archive type
+     * based on the file name extension. It then uses either a {@link CBRParser} or {@link CBZParser}
+     * to extract pages from the specified path. If an error occurs during the extraction, it prints
+     * an error message to the standard error output.
+     * </p>
+     */
     public void loadPages() {
         if (pages.isEmpty()) {
             try {
@@ -89,6 +98,20 @@ public class Comicbook {
         return read;
     }
 
+    /**
+     * Creates a {@link Comicbook} instance from a specified file path.
+     * <p>
+     * This static factory method extracts the comic book name from the provided file path by
+     * taking the substring between the last slash and the file extension. It then constructs
+     * and returns a new {@link Comicbook} object using the extracted name, the provided list of
+     * pages, and the original path.
+     * </p>
+     *
+     * @param filePath the full file path of the comic book file
+     * @param pages the list of {@link Page} objects associated with the comic book
+     * @param path the original path where the comic book is located
+     * @return a new {@link Comicbook} instance
+     */
     public static Comicbook fromFilePath(String filePath, List<Page> pages, String path) {
         String name = filePath.substring(filePath.lastIndexOf("/") + 1, filePath.lastIndexOf("."));
         System.out.println(name);

@@ -13,6 +13,22 @@ import java.util.stream.Stream;
 
 public class DirectoryScanner {
 
+    /**
+     * Retrieves a list of comic book file paths from the specified directory or user data.
+     * <p>
+     * This method first checks for the existence of a user data file and throws an exception
+     * if it cannot be read. It then loads user data to determine whether an initial scan of the
+     * directory has been performed. If the application data file exists and the initial scan has
+     * been completed, it retrieves comic book paths from the app data file. Otherwise, it performs
+     * a directory scan to collect comic file paths based on the specified extensions and updates
+     * the user data accordingly.
+     * </p>
+     *
+     * @param directory the directory to scan for comic book files
+     * @param extensions the allowed file extensions for comic books (e.g., .cbr, .cbz)
+     * @return a list of strings representing the paths to the comic book files
+     * @throws IOException if an error occurs while reading files or performing scans
+     */
     public static List<String> getComicFilePaths(Path directory, String... extensions) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         String userDataPath = "userdata/data.json";
@@ -43,6 +59,24 @@ public class DirectoryScanner {
         return comicFiles;
     }
 
+    /**
+     * Performs an initial scan of the specified directory to find comic book files.
+     * <p>
+     * This method walks through the given directory and filters for regular files with
+     * specified extensions. For each valid comic book file found, it attempts to extract
+     * its pages using either a {@link CBRParser} or a {@link CBZParser}. The results are stored
+     * in a list of {@link Comicbook} objects, which are then saved to the application data file.
+     * The user data is updated to reflect that the initial scan has been completed.
+     * </p>
+     *
+     * @param directory the directory to scan for comic book files
+     * @param extensions the allowed file extensions for comic books (e.g., .cbr, .cbz)
+     * @param appDataFile the file where the list of found comic books will be saved
+     * @param userdata the user data object to be updated
+     * @param userDataFile the file where user data will be saved
+     * @return a list of strings representing the paths to the found comic book files
+     * @throws IOException if an error occurs while reading files or writing to the data files
+     */
     private static List<String> performInitialDirectoryScan(Path directory, String[] extensions,
                                                             File appDataFile, Userdata userdata,
                                                             File userDataFile) throws IOException {

@@ -14,15 +14,34 @@ public class Page {
     public BufferedImage image;
     public List<Annotation> annotationsList;
 
+    /**
+     * Creates a new {@link Page} instance with a specified number, path, and image.
+     *
+     * @param number the page number
+     * @param path the file path of the image associated with the page
+     * @param image the {@link BufferedImage} representation of the page
+     */
     public Page(int number, String path, BufferedImage image) {
         this.number = number;
         this.path = path;
         this.image = image;
     }
+
+    /**
+     * Creates a new {@link Page} instance with only the specified image.
+     *
+     * @param image the {@link BufferedImage} representation of the page
+     */
     public Page(BufferedImage image) {
         this.image = image;
     }
 
+    /**
+     * Creates a new empty {@link Page} instance.
+     * <p>
+     * This constructor initializes a {@link Page} object without setting any properties.
+     * </p>
+     */
     public Page(){}
 
     public int getCurrentPageNumber() {
