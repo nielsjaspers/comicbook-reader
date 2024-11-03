@@ -2,8 +2,7 @@
 Overview
 Comic Book Reader is a Java application designed to allow users to view, import, and manage digital comic books. Users can load .cbr, .cbz, and .nhlcomic files, view pages in sequence, continue reading from the last saved position, and invert colors for better readability.
 
-**Features**
-Comic Book Import: Supports .cbr, .cbz, and .nhlcomic formats.
+**Features Comic Book Import**: Supports .cbr, .cbz, and .nhlcomic formats.
 Progress Tracking: Allows users to resume comics from the last saved page or start from the beginning.
 Image Inversion: Option to invert comic page colors.
 
