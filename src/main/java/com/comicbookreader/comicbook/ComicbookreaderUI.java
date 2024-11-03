@@ -54,7 +54,7 @@ public class ComicbookreaderUI implements ActionListener {
         JButton mainMenuButton = new JButton ("Main Menu");
         mainMenuButton.addActionListener(this);
 
-        pageNumberLabel = new JLabel("Current page: " + (currentPage + 1));
+        pageNumberLabel = new JLabel("Current page: " + (currentPage + 1) + " / " + pages.size());
 
         navigationPanel.add(previousButton);
         navigationPanel.add(pageNumberLabel);
@@ -96,7 +96,7 @@ public class ComicbookreaderUI implements ActionListener {
         BufferedImage img = pages.get(currentPage).image;
         if (img != null) {
             imageLabel.setIcon(new ImageIcon(scaleImages(img)));
-            pageNumberLabel.setText("Current page: " + (currentPage + 1));
+            pageNumberLabel.setText("Current page: " + (currentPage + 1) + " / " + pages.size());
         } else {
             imageLabel.setIcon(null);
             pageNumberLabel.setText("Image not found for this page");
