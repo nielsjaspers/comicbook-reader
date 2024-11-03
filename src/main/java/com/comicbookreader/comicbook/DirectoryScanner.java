@@ -47,7 +47,7 @@ public class DirectoryScanner {
         List<String> comicFiles = new ArrayList<>();
         if (appDataFile.exists() && userdata.getHadInitialScan()) {
             // Step 2: Load from appdata/data.json
-            List<Comicbook> comicList = mapper.readValue(appDataFile, new TypeReference<>() {});
+            List<Comicbook> comicList = mapper.readValue(appDataFile, new TypeReference<List<Comicbook>>() {});
             for (Comicbook comic : comicList) {
                 comicFiles.add(comic.getPath()); // Use paths stored in JSON
             }
