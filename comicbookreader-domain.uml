@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>/Users/niels/School/Jaar 2 - ICT SE/OOP/comicbook-reader</OriginalElement>
+  <nodes>
+    <node x="-941.1235741444866" y="1793.8833967046894">com.comicbookreader.comicbook.SettingsMenu</node>
+    <node x="-976.0145754119137" y="1428.2205323193914">com.comicbookreader.comicbook.CBRParser</node>
+    <node x="-1462.6806083650188" y="1807.0506970849171">com.comicbookreader.comicbook.DirectoryScanner</node>
+    <node x="-1077.5126742712296" y="1275.8054499366285">com.comicbookreader.comicbook.FileParser</node>
+    <node x="-127.05513307984802" y="1498.9480354879595">com.comicbookreader.comicbook.Comicbook</node>
+    <node x="-381.8757921419517" y="1179.8602661596956">com.comicbookreader.cleanupcrew.AppDataCleanup</node>
+    <node x="-1180.6806083650188" y="1956.562103929024">com.comicbookreader.user.Userdata</node>
+    <node x="-1515.795310519645" y="1629.6356147021543">com.comicbookreader.comicbook.GifFrameExtractor</node>
+    <node x="-1337.3859315589352" y="1428.2205323193914">com.comicbookreader.comicbook.CBZParser</node>
+    <node x="-675.0" y="1130.8602661596956">com.comicbookreader.Main</node>
+    <node x="-629.2281368821293" y="1629.6356147021543">com.comicbookreader.comicbook.Mainmenu</node>
+    <node x="-88.00950570342229" y="1291.944040557668">com.comicbookreader.comicbook.Page</node>
+    <node x="-940.6235741444866" y="2022.9410646387828">com.comicbookreader.comicbook.ComicbookreaderUI</node>
+    <node x="-596.0253485424587" y="1994.5126742712291">com.comicbookreader.comicbook.ComicBookLoader</node>
+    <node x="-384.8757921419517" y="1083.5595690747782">com.comicbookreader.cleanupcrew.UserDataCleanup</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.comicbookreader.comicbook.CBRParser" target="com.comicbookreader.comicbook.FileParser" relationship="REALIZATION">
+      <point x="-142.50042458808628" y="4.676806086081342E-4" />
+      <point x="-1014.0" y="1484.221" />
+      <point x="-1014.0" y="1465.0" />
+      <point x="-1014.2002534854245" y="1465.0" />
+      <point x="-1014.2002534854245" y="1338.805" />
+      <point x="-62.68757921419501" y="31.499550063371544" />
+    </edge>
+    <edge source="com.comicbookreader.comicbook.ComicbookreaderUI" target="com.comicbookreader.comicbook.Comicbook" relationship="TO_ONE">
+      <point x="-4.258555134128983E-4" y="79.99993536121701" />
+      <point x="-806.624" y="2201.441" />
+      <point x="-199.68441064638773" y="2201.441" />
+      <point x="-199.68441064638773" y="1783.948" />
+      <point x="-184.0004942965777" y="-3.548795939423144E-5" />
+    </edge>
+    <edge source="com.comicbookreader.comicbook.ComicBookLoader" target="com.comicbookreader.comicbook.Comicbook" relationship="TO_MANY">
+      <point x="126.49953992395444" y="-6.46387829874584E-5" />
+      <point x="-199.68441064638773" y="2075.512609632446" />
+      <point x="-199.68441064638773" y="1783.948" />
+      <point x="-184.0004942965777" y="-3.548795939423144E-5" />
+    </edge>
+    <edge source="com.comicbookreader.comicbook.CBZParser" target="com.comicbookreader.comicbook.GifFrameExtractor" relationship="TO_ONE">
+      <point x="-103.40937896070977" y="56.0" />
+      <point x="0.0" y="-44.0" />
+    </edge>
+    <edge source="com.comicbookreader.comicbook.ComicbookreaderUI" target="com.comicbookreader.comicbook.Page" relationship="TO_MANY">
+      <point x="133.9995741444866" y="-6.46387829874584E-5" />
+      <point x="-654.624" y="2102.941" />
+      <point x="-654.624" y="1585.0" />
+      <point x="-598.067" y="1585.0" />
+      <point x="-598.067" y="1384.4440747782" />
+      <point x="-125.50046007604556" y="3.422053214308107E-5" />
+    </edge>
+    <edge source="com.comicbookreader.comicbook.CBZParser" target="com.comicbookreader.comicbook.FileParser" relationship="REALIZATION">
+      <point x="142.49993155893526" y="4.676806086081342E-4" />
+      <point x="-1014.0" y="1484.221" />
+      <point x="-1014.0" y="1465.0" />
+      <point x="-1014.2002534854245" y="1465.0" />
+      <point x="-1014.2002534854245" y="1338.805" />
+      <point x="-62.68757921419501" y="31.499550063371544" />
+    </edge>
+    <edge source="com.comicbookreader.comicbook.CBRParser" target="com.comicbookreader.comicbook.Page" relationship="TO_MANY">
+      <point x="-4.2458808627543476E-4" y="56.00046768060861" />
+      <point x="-833.515" y="1585.0" />
+      <point x="-598.067" y="1585.0" />
+      <point x="-598.067" y="1384.4440747782" />
+      <point x="-125.50046007604556" y="3.422053214308107E-5" />
+    </edge>
+    <edge source="com.comicbookreader.comicbook.Comicbook" target="com.comicbookreader.comicbook.Page" relationship="TO_MANY">
+      <point x="-184.0004942965777" y="-171.81203548795952" />
+      <point x="-613.067" y="1612.136" />
+      <point x="-613.067" y="1585.0" />
+      <point x="-598.067" y="1585.0" />
+      <point x="-598.067" y="1384.4440747782" />
+      <point x="-125.50046007604556" y="3.422053214308107E-5" />
+    </edge>
+    <edge source="com.comicbookreader.comicbook.Mainmenu" target="com.comicbookreader.comicbook.Comicbook" relationship="TO_MANY">
+      <point x="181.99953992395444" y="3.612167301980662E-4" />
+      <point x="-230.0" y="1794.6359759188845" />
+      <point x="-230.0" y="1783.948" />
+      <point x="-184.0004942965777" y="-3.548795939423144E-5" />
+    </edge>
+    <edge source="com.comicbookreader.comicbook.CBZParser" target="com.comicbookreader.comicbook.Page" relationship="TO_MANY">
+      <point x="-6.84410647409095E-5" y="56.00046768060861" />
+      <point x="-1194.886" y="1585.0" />
+      <point x="-598.067" y="1585.0" />
+      <point x="-598.067" y="1384.4440747782" />
+      <point x="-125.50046007604556" y="3.422053214308107E-5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.6285601438683958" showDependencies="true" x="-671.5094974360163" y="1631.6249040737748" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

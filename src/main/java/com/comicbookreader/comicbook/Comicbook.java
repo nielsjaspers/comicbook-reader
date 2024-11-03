@@ -2,7 +2,6 @@ package com.comicbookreader.comicbook;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -62,6 +61,15 @@ public class Comicbook {
     }
 
 
+    /**
+     * Inverts the order of the pages in the provided list.
+     * <p>
+     * This method takes an {@link ArrayList} of {@link Page} objects, reverses their order,
+     * and returns the inverted list. The original list is modified in place.
+     * </p>
+     *
+     * @return the inverted list of pages
+     */
     public ArrayList<Page> invertPages() {
         Collections.reverse(pages);
         return pages;
