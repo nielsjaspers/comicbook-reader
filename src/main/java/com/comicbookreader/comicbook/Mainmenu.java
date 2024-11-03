@@ -27,11 +27,11 @@ public class Mainmenu implements ActionListener {
     private JLabel numberLabel;
     private String appDataPath = "appdata/data.json";
     private File appDataFile = new File(appDataPath);
+    private JButton startFromBeginningButton;
 
 
     public Mainmenu(ArrayList<Comicbook> comicList) {
         this.comicList = comicList; // Retrieve the loaded comics
-
         initUI();
     }
 
@@ -82,8 +82,16 @@ public class Mainmenu implements ActionListener {
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center the image
         centerPanel.add(imageLabel, BorderLayout.CENTER); // Add image label to the center panel
 
+        //create Button panel for start from beginnning and continue comic
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+
         // Buttons
-        JButton selectButton = new JButton("Select Comic");
+        startFromBeginningButton = new JButton("Start From Beginning");
+        startFromBeginningButton.addActionListener(this);
+        startFromBeginningButton.setEnabled(false);
+
+
+        JButton selectButton = new JButton("Continue Comic");
         selectButton.addActionListener(this);
 
         JButton invertButton = new JButton("Invert Comic");
@@ -92,10 +100,13 @@ public class Mainmenu implements ActionListener {
         JButton addButton = new JButton("Import Comic");
         addButton.addActionListener(e -> importComic());
 
+        buttonPanel.add(startFromBeginningButton);
+        buttonPanel.add(selectButton);
+
         // Panel for the Import, Select, invert buttons
+        centerPanel.add(buttonPanel, BorderLayout.SOUTH);
         westPanel.add(addButton, BorderLayout.SOUTH); // Add to the bottom panel
         eastPanel.add(invertButton, BorderLayout.SOUTH); // East of the bottom
-        centerPanel.add(selectButton, BorderLayout.SOUTH); // Centered in the bottom
 
         // Add panels to the main frame
         mainPanel.add(westPanel, BorderLayout.WEST); // West side for JList
@@ -107,6 +118,7 @@ public class Mainmenu implements ActionListener {
 
         frame.add(mainPanel);
         frame.setVisible(true);
+
     }
 
     /**
@@ -168,6 +180,7 @@ public class Mainmenu implements ActionListener {
                     if (selectedIndex != -1) {
                         currentComic = comicList.get(selectedIndex);
                         Page firstPage = currentComic.getPages().getFirst();
+                        updatestartFromBeginningButton(currentComic);
                         displayPage(firstPage);
                     }
                 }
@@ -193,15 +206,25 @@ public class Mainmenu implements ActionListener {
         if (command.equals("Invert Comic") && currentComic != null) {
             currentComic.invertPages();
             displayPage(currentComic.getPages().getFirst());
-        } else if (command.equals("Select Comic")) {
+        } else if (command.equals("Continue Comic")) {
             int selectedIndex = displayList.getSelectedIndex();
             if (selectedIndex != -1) {
-                currentComic = comicList.get(selectedIndex);
-                new ComicbookreaderUI(currentComic.getPages());
+                updatestartFromBeginningButton(currentComic);
+                new ComicbookreaderUI(currentComic);
             } else {
                 System.out.println("No comic selected.");
             }
         }
+        if (command.equals("Start From Beginning")) {
+                currentComic.setComicbookProgression(currentComic.getName(), 0);
+                new ComicbookreaderUI(currentComic);
+            }
+        }
+    private void updatestartFromBeginningButton(Comicbook currentComic) {
+        if (currentComic != null && currentComic.getComicbookProgression(currentComic.getName()) >= 1) {
+            // If currentPage is greater than 0, show the button, otherwise hide it
+            startFromBeginningButton.setEnabled(true);
+        } else startFromBeginningButton.setEnabled(false);
     }
     public JList<String> getDisplayList() {
         return displayList;
