@@ -8,8 +8,7 @@ Progress Tracking: Allows users to resume comics from the last saved page or sta
 Image Inversion: Option to invert comic page colors.
 
 
-**Installation**
-Prerequisites: Ensure Java 8 or above is installed.
+**Installation Prerequisites**: Ensure Java 8 or above is installed.
 Dependencies: Add required libraries, such as Jackson for JSON handling.
 
 **Clone Repository:**
@@ -30,8 +29,7 @@ Select a comic to view from the list.
 Use the Continue Comic button to resume from the last page.
 Use the Start From Beginning button to restart the comic if previously read.
 
-**Project 
-**
+**Project**
 Mainmenu: The main interface with comic list, buttons, and progression tracking.
 Comicbook: Represents a comic, including pages and progression.
 Page: Manages individual comic pages and images.
