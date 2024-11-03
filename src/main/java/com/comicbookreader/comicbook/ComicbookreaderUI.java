@@ -1,33 +1,38 @@
 package com.comicbookreader.comicbook;
 
 import com.comicbookreader.Main;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.nio.ByteBuffer;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.sun.javafx.iio.common.ImageTools.scaleImage;
 
 public class ComicbookreaderUI implements ActionListener {
     private JFrame frame;
     private JLabel imageLabel;
     private JLabel pageNumberLabel;
     private ArrayList<Page> pages;
+    private Comicbook comicbook;
     private int currentPage = 0;
     public Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+    private ObjectMapper mapper = new ObjectMapper();
 
-    public ComicbookreaderUI(ArrayList<Page> pages) {
-        this.pages = pages;
-       initUI();
+
+    public ComicbookreaderUI(Comicbook comicbook) {
+        this.currentPage = comicbook.getComicbookProgression(comicbook.getName());
+        this.comicbook = comicbook;
+        this.pages = comicbook.getPages();
+        initUI();
     }
 
-    public void initUI(){
+    public void initUI() {
         frame = new JFrame("Comic Book Reader");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -47,11 +52,11 @@ public class ComicbookreaderUI implements ActionListener {
         JPanel navigationPanel = new JPanel(new FlowLayout());
         JButton previousButton = new JButton("< Previous");
         previousButton.addActionListener(this);
-        JButton nextButton = new JButton ("Next >");
+        JButton nextButton = new JButton("Next >");
         nextButton.addActionListener(this);
 
         JPanel mainMenuPanel = new JPanel(new FlowLayout());
-        JButton mainMenuButton = new JButton ("Main Menu");
+        JButton mainMenuButton = new JButton("Main Menu");
         mainMenuButton.addActionListener(this);
 
         pageNumberLabel = new JLabel("Current page: " + (currentPage + 1) + " / " + pages.size());
@@ -71,21 +76,24 @@ public class ComicbookreaderUI implements ActionListener {
         String command = e.getActionCommand();
 
         if (command.equals("Next >") && currentPage < (pages.size() - 1)) {
-            currentPage ++;
+            currentPage++;
             updatePageDisplay();
             System.out.println("The page is going up and = " + currentPage);
 
 
         } else if (command.equals("< Previous") && currentPage > 0) {
-            currentPage --;
+            currentPage--;
             updatePageDisplay();
             System.out.println("The page is going down and = " + currentPage);
-        }
-        else if (command.equals("Main Menu")){
+        } else if (command.equals("Main Menu")) {
+            comicbook.setProgression(currentPage);
+            System.out.println("Progression for " + comicbook.getName() + " Last read page: " + currentPage);
+            comicbook.setComicbookProgression(comicbook.getName(), currentPage);
             frame.dispose();
             Main main = new Main();
         }
     }
+
 
     private void updatePageDisplay() {
         if (pages.isEmpty()) {
@@ -104,7 +112,7 @@ public class ComicbookreaderUI implements ActionListener {
     }
 
 
-    private Image scaleImages(BufferedImage img){
+    private Image scaleImages(BufferedImage img) {
         int imgWidth = img.getWidth();
         int imgHeight = img.getHeight();
 
@@ -127,3 +135,4 @@ public class ComicbookreaderUI implements ActionListener {
         return scaledImage;
     }
 }
+
