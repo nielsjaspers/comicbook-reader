@@ -90,7 +90,6 @@ public class ComicbookreaderUI implements ActionListener {
             System.out.println("Progression for " + comicbook.getName() + " Last read page: " + currentPage);
             comicbook.setComicbookProgression(comicbook.getName(), currentPage);
             frame.dispose();
-            Main main = new Main();
         }
     }
 
