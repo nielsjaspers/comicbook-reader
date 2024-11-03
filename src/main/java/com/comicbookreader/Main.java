@@ -47,6 +47,7 @@ public class Main {
      * @throws IOException if an I/O error occurs during directory or file creation.
      */
     private static void setupDataDirectories() throws IOException {
+        Path importedComicsDirectory = Paths.get("imported_comics");
         Path appDataDirectory = Paths.get("appdata");
         Path userDataDirectory = Paths.get("userdata");
 
@@ -61,6 +62,9 @@ public class Main {
         }
         if (!userDataJson.exists()) {
             Files.writeString(userDataJson.toPath(), "{}"); // Initialize with empty JSON object
+        }
+        if (!Files.exists(importedComicsDirectory)) {
+            Files.createDirectories(importedComicsDirectory);
         }
     }
 }
